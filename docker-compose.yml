@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  sql:
+    container_name: sql
+    image: mcr.microsoft.com/mssql/server
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: yourStrong(!)Password
+    networks:
+      - "pr1"
+    volumes:
+      - "mssqlsystem:/var/opt/mssql"
+      - "mssqluser:/var/opt/sqlserver"
+    restart: always
+  main_web: 
+    container_name: main_api
+    image:  pr1_main_api
+    ports:
+      - "8000:8080"
+    networks:
+      - "pr1"
+    restart: always
+  frontend_ng:
+    container_name: frontend_ng
+    image: pr1_ng
+    ports:
+      - "9000:8080"
+    networks:
+      - "pr1"
+    restart: always
+networks:
+  pr1:
+    driver: bridge
+volumes: 
+  mssqlsystem:
+    external: true
+  mssqluser: 
+    external: true
